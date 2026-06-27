@@ -73,3 +73,21 @@ export const sequenceLevelConfig: Record<
   2: { length: 3, rounds: 6 },
   3: { length: 4, rounds: 8 },
 };
+
+export const spotDiffLevelConfig: Record<
+  GameLevel,
+  { diffCount: number; showHints: boolean; puzzleCount: number }
+> = {
+  1: { diffCount: 2, showHints: true, puzzleCount: 2 },
+  2: { diffCount: 3, showHints: false, puzzleCount: 3 },
+  3: { diffCount: 4, showHints: false, puzzleCount: 3 },
+};
+
+export const hiraganaLevelConfig: Record<
+  GameLevel,
+  { guideOpacity: number; strokeWidth: number; minInkPixels: number }
+> = {
+  1: { guideOpacity: 0.35, strokeWidth: 16, minInkPixels: 800 },
+  2: { guideOpacity: 0.25, strokeWidth: 14, minInkPixels: 1200 },
+  3: { guideOpacity: 0.15, strokeWidth: 12, minInkPixels: 1500 },
+};

@@ -51,6 +51,20 @@ const games = [
     hint: "でてきた じゅんばん を おぼえよう",
     tag: "きおく",
   },
+  {
+    href: "/games/spot-diff",
+    emoji: "🔍",
+    title: "まちがい さがし",
+    hint: "AIの え で ちがう ところを さがそう",
+    tag: "め",
+  },
+  {
+    href: "/games/hiragana",
+    emoji: "✏️",
+    title: "ひらがな れんしゅう",
+    hint: "ゆびで なぞって かいて みよう",
+    tag: "もじ",
+  },
 ] as const;
 
 export default function Home() {
@@ -64,7 +78,7 @@ export default function Home() {
           みんなのミニゲーム
         </h1>
         <p className="mt-2 text-lg text-stone-600">
-          タップして あそぶ 7つの ゲーム
+          タップして あそぶ 9つの ゲーム
         </p>
       </header>
 
