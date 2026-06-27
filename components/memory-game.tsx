@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { GameInstruction } from "@/components/game-instruction";
 import { KidButton } from "@/components/kid-button";
-
-const SYMBOLS = ["🐶", "🐱", "🐻", "🐼", "🐸", "🦊"] as const;
+import { ProgressStars } from "@/components/progress-stars";
+import { useSettings } from "@/components/providers/settings-provider";
+import { WinCelebration } from "@/components/win-celebration";
+import { MEMORY_SYMBOLS, pickRandom } from "@/lib/quiz-data";
+import { memoryLevelConfig } from "@/lib/levels";
 
 type Card = {
   id: string;
@@ -21,34 +25,60 @@ function shuffle<T>(items: T[]): T[] {
   return a;
 }
 
-function buildDeck(): Card[] {
-  const pairs = SYMBOLS.flatMap((s, i) => [
+function buildDeck(pairs: number): Card[] {
+  const symbols = pickRandom(MEMORY_SYMBOLS, pairs);
+  const deck = symbols.flatMap((s, i) => [
     { id: `${i}-a`, symbol: s, faceUp: false, matched: false },
     { id: `${i}-b`, symbol: s, faceUp: false, matched: false },
   ]);
-  return shuffle(pairs);
+  return shuffle(deck);
 }
 
 export function MemoryGame() {
-  const [cards, setCards] = useState<Card[]>(() => buildDeck());
+  const { level, play } = useSettings();
+  const config = memoryLevelConfig[level];
+  const [cards, setCards] = useState<Card[]>(() => buildDeck(config.pairs));
   const [pending, setPending] = useState<string[]>([]);
   const [lockBoard, setLockBoard] = useState(false);
   const [moves, setMoves] = useState(0);
+  const [peeking, setPeeking] = useState(config.peekMs > 0);
 
-  const won = useMemo(() => cards.length > 0 && cards.every((c) => c.matched), [cards]);
+  const matchedCount = useMemo(
+    () => cards.filter((c) => c.matched).length / 2,
+    [cards],
+  );
+  const won = cards.length > 0 && cards.every((c) => c.matched);
 
   const reset = useCallback(() => {
-    setCards(buildDeck());
+    const cfg = memoryLevelConfig[level];
+    setCards(buildDeck(cfg.pairs));
     setPending([]);
     setLockBoard(false);
     setMoves(0);
-  }, []);
+    if (cfg.peekMs > 0) {
+      setPeeking(true);
+      setCards((prev) => prev.map((c) => ({ ...c, faceUp: true })));
+      setTimeout(() => {
+        setCards((prev) =>
+          prev.map((c) => (c.matched ? c : { ...c, faceUp: false })),
+        );
+        setPeeking(false);
+      }, cfg.peekMs);
+    } else {
+      setPeeking(false);
+    }
+  }, [level]);
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const handleCardClick = (id: string) => {
-    if (lockBoard) return;
+    if (lockBoard || peeking) return;
     const card = cards.find((c) => c.id === id);
     if (!card || card.matched || card.faceUp) return;
 
+    play("flip");
     const nextFaceUp = cards.map((c) =>
       c.id === id ? { ...c, faceUp: true } : c,
     );
@@ -72,6 +102,7 @@ export function MemoryGame() {
     }
 
     if (first.symbol === second.symbol) {
+      play("match");
       setCards(
         nextFaceUp.map((c) =>
           c.id === firstId || c.id === secondId ? { ...c, matched: true } : c,
@@ -82,6 +113,7 @@ export function MemoryGame() {
       return;
     }
 
+    play("wrong");
     setTimeout(() => {
       setCards((prev) =>
         prev.map((c) =>
@@ -92,16 +124,38 @@ export function MemoryGame() {
       );
       setPending([]);
       setLockBoard(false);
-    }, 700);
+    }, config.mismatchMs);
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <p className="text-center text-lg text-stone-600">
-        おなじ え を みつけよう！ かいすう: {moves}
+    <div className="flex flex-col gap-5">
+      <GameInstruction
+        emoji="🃏"
+        steps={[
+          "？を タップして めくる",
+          "おなじ え を みつける",
+          "ぜんぶ そろえたら クリア！",
+        ]}
+      />
+
+      {peeking ? (
+        <p className="rounded-2xl bg-sky-100 py-2 text-center text-lg font-bold text-sky-800">
+          👀 よく みてね！ すぐ かくれるよ
+        </p>
+      ) : null}
+
+      <ProgressStars current={matchedCount} total={config.pairs} />
+
+      <p className="text-center text-base text-stone-600">
+        めくった かいすう: {moves}
       </p>
 
-      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 sm:gap-4">
+      <div
+        className="grid gap-3"
+        style={{
+          gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))`,
+        }}
+      >
         {cards.map((card) => {
           const show = card.faceUp || card.matched;
           return (
@@ -109,11 +163,13 @@ export function MemoryGame() {
               key={card.id}
               type="button"
               onClick={() => handleCardClick(card.id)}
-              disabled={card.matched || lockBoard}
-              className={`flex aspect-square items-center justify-center rounded-3xl text-4xl shadow-md ring-2 transition sm:text-5xl ${
+              disabled={card.matched || lockBoard || peeking}
+              className={`flex aspect-square items-center justify-center rounded-3xl text-3xl shadow-md ring-2 transition sm:text-4xl ${
                 card.matched
                   ? "bg-green-100 ring-green-300"
-                  : "bg-white ring-amber-200 hover:bg-amber-50"
+                  : show
+                    ? "bg-amber-50 ring-amber-300"
+                    : "bg-white ring-amber-200 hover:bg-amber-50"
               } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 disabled:cursor-default`}
               aria-label={show ? card.symbol : "かーど"}
             >
@@ -125,36 +181,11 @@ export function MemoryGame() {
         })}
       </div>
 
-      <div className="flex flex-wrap justify-center gap-3">
-        <KidButton variant="secondary" onClick={reset}>
-          あたらしく はじめる
-        </KidButton>
-      </div>
+      <KidButton variant="secondary" className="self-center" onClick={reset}>
+        あたらしく はじめる
+      </KidButton>
 
-      {won ? (
-        <div
-          className="fixed inset-0 z-10 flex items-center justify-center bg-black/30 p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="memory-win-title"
-        >
-          <div className="w-full max-w-sm rounded-3xl bg-white p-8 text-center shadow-xl ring-2 ring-amber-200">
-            <p className="text-5xl" aria-hidden>
-              ⭐
-            </p>
-            <h2
-              id="memory-win-title"
-              className="mt-2 text-2xl font-bold text-stone-800"
-            >
-              クリア！
-            </h2>
-            <p className="mt-2 text-stone-600">すごいね！</p>
-            <KidButton className="mt-6 w-full" onClick={reset}>
-              もういちど
-            </KidButton>
-          </div>
-        </div>
-      ) : null}
+      <WinCelebration show={won} onAgain={reset} />
     </div>
   );
 }

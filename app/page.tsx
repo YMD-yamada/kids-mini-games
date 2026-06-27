@@ -1,29 +1,61 @@
 import Link from "next/link";
+import { HomeSettings } from "@/components/home-settings";
 
 const games = [
   {
     href: "/games/memory",
     emoji: "🃏",
     title: "かーど めくり",
-    hint: "おなじ えが ふたつ ずつ あつめよう",
+    hint: "おなじ え を みつけよう",
+    tag: "きおく",
   },
   {
     href: "/games/quiz",
     emoji: "❓",
     title: "どれだ？",
-    hint: "おてまえの しつもんに こたえよう",
+    hint: "もんだいに こたえよう",
+    tag: "クイズ",
   },
   {
     href: "/games/reflex",
     emoji: "⚡",
     title: "はやおし",
-    hint: "でてきたら すばやく タッチ！",
+    hint: "🐼 が でたら タッチ！",
+    tag: "はやさ",
+  },
+  {
+    href: "/games/color",
+    emoji: "🎨",
+    title: "いろ あわせ",
+    hint: "おなじ いろ を えらぼう",
+    tag: "いろ",
+  },
+  {
+    href: "/games/count",
+    emoji: "🔢",
+    title: "かぞえよう",
+    hint: "え を かぞえて こたえよう",
+    tag: "かず",
+  },
+  {
+    href: "/games/same",
+    emoji: "👀",
+    title: "おなじ？ ちがう？",
+    hint: "ふたつの え を くらべよう",
+    tag: "くらべ",
+  },
+  {
+    href: "/games/sequence",
+    emoji: "🧩",
+    title: "じゅんばん",
+    hint: "でてきた じゅんばん を おぼえよう",
+    tag: "きおく",
   },
 ] as const;
 
 export default function Home() {
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
+    <div className="mx-auto flex min-h-full w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <header className="text-center">
         <p className="text-5xl" aria-hidden>
           🌈
@@ -32,11 +64,13 @@ export default function Home() {
           みんなのミニゲーム
         </h1>
         <p className="mt-2 text-lg text-stone-600">
-          タップして あそぶ かんたんゲーム
+          タップして あそぶ 7つの ゲーム
         </p>
       </header>
 
-      <ul className="flex flex-col gap-4">
+      <HomeSettings />
+
+      <ul className="flex flex-col gap-3">
         {games.map((g) => (
           <li key={g.href}>
             <Link
@@ -48,6 +82,9 @@ export default function Home() {
                   {g.emoji}
                 </span>
                 {g.title}
+                <span className="ml-auto rounded-full bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700">
+                  {g.tag}
+                </span>
               </span>
               <span className="pl-[3.25rem] text-base text-stone-600">
                 {g.hint}
@@ -58,6 +95,8 @@ export default function Home() {
       </ul>
 
       <p className="text-center text-sm text-stone-500">
+        🔊 おと は みぎうえから 切り替えできるよ
+        <br />
         おうちのひとと いっしょに あそぼう
       </p>
     </div>
