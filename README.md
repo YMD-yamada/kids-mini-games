@@ -2,6 +2,12 @@
 
 未就学〜低学年むけのミニゲームをいくつか入れた Next.js アプリです。アカウントや外部トラッキングはありません。
 
+## 公開 URL
+
+**本番:** https://ymd-yamada.github.io/kids-mini-games/
+
+リポジトリ: https://github.com/YMD-yamada/kids-mini-games
+
 ## はじめかた
 
 開発サーバー:
@@ -20,13 +26,13 @@ npm run dev
 - **どれだ？** — いろ・かたち・かずの問題
 - **はやおし** — パンダが出たらすばやくタップ
 
-## Vercel へのデプロイ
+## Vercel へのデプロイ（任意）
 
-1. リポジトリを Git に push する
-2. [Vercel](https://vercel.com) で「New Project」→ この `kids-mini-games` フォルダをルートに指定（モノレポなら Root Directory を `kids-mini-games` に設定）
-3. フレームワークは Next.js のままデプロイ
+GitHub Pages で公開済みです。独自ドメインや Vercel のプレビューが必要な場合:
 
-詳細は [Next.js deployment](https://nextjs.org/docs/app/building-your-application/deploying) を参照してください。
+1. [Vercel](https://vercel.com) に GitHub アカウントでログイン
+2. 「New Project」→ `YMD-yamada/kids-mini-games` をインポート
+3. 設定はデフォルトのまま Deploy（`GITHUB_PAGES` は未設定のまま）
 
 ## ビルド
 
