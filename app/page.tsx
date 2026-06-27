@@ -14,7 +14,7 @@ const games = [
     emoji: "❓",
     title: "どれだ？",
     hint: "もんだいに こたえよう",
-    tag: "クイズ",
+    tag: "もんだい",
   },
   {
     href: "/games/reflex",
@@ -108,8 +108,8 @@ export default function Home() {
         ))}
       </ul>
 
-      <p className="text-center text-sm text-stone-500">
-        🔊 おと は みぎうえから 切り替えできるよ
+      <p className="text-center text-sm leading-relaxed text-stone-500">
+        🔊 おとの スイッチは うえで 切り替えできるよ
         <br />
         おうちのひとと いっしょに あそぼう
       </p>

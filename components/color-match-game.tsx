@@ -87,7 +87,9 @@ export function ColorMatchGame() {
             {round.target.emoji} {round.target.name}
           </p>
         ) : (
-          <p className="text-2xl font-bold text-stone-700">この いろ は どれ？</p>
+          <p className="text-2xl font-bold text-stone-700">
+            {round.target.emoji} — この いろ は どれ？
+          </p>
         )}
       </div>
 
@@ -105,9 +107,7 @@ export function ColorMatchGame() {
               style={{ backgroundColor: c.hex }}
               aria-hidden
             />
-            {cfg.showName ? (
-              <span className="text-sm font-bold text-stone-700">{c.name}</span>
-            ) : null}
+            <span className="text-sm font-bold text-stone-700">{c.name}</span>
           </button>
         ))}
       </div>

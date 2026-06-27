@@ -1,4 +1,5 @@
 import type { GameLevel } from "@/lib/levels";
+import { pickRandom, shuffle } from "@/lib/random";
 
 export type QuizChoice = {
   id: string;
@@ -151,8 +152,7 @@ export const quizQuestions: QuizQuestion[] = [
 
 export function getQuizForLevel(level: GameLevel, count: number) {
   const pool = quizQuestions.filter((q) => q.minLevel <= level);
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, Math.min(count, shuffled.length));
+  return shuffle(pool).slice(0, Math.min(count, pool.length));
 }
 
 export const COLOR_ITEMS = [
@@ -176,15 +176,4 @@ export const MEMORY_SYMBOLS = [
   "🐶", "🐱", "🐻", "🐼", "🐸", "🦊", "🐰", "🦁", "🐯", "🐨",
 ] as const;
 
-function shuffle<T>(items: T[]): T[] {
-  const a = [...items];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-export function pickRandom<T>(items: readonly T[], count: number): T[] {
-  return shuffle([...items]).slice(0, count);
-}
+export { pickRandom, shuffle } from "@/lib/random";

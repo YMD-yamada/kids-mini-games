@@ -17,31 +17,38 @@ type SettingsContextValue = {
   setLevel: (level: GameLevel) => void;
   soundOn: boolean;
   setSoundOn: (on: boolean) => void;
+  speechOn: boolean;
+  setSpeechOn: (on: boolean) => void;
   play: (id: SoundId) => void;
+  ready: boolean;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
 const LEVEL_KEY = "kids-games-level";
 const SOUND_KEY = "kids-games-sound";
+const SPEECH_KEY = "kids-games-speech";
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [level, setLevelState] = useState<GameLevel>(1);
   const [soundOn, setSoundOnState] = useState(true);
-  const [hydrated, setHydrated] = useState(false);
+  const [speechOn, setSpeechOnState] = useState(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     try {
       const savedLevel = localStorage.getItem(LEVEL_KEY);
       const savedSound = localStorage.getItem(SOUND_KEY);
+      const savedSpeech = localStorage.getItem(SPEECH_KEY);
       if (savedLevel === "1" || savedLevel === "2" || savedLevel === "3") {
         setLevelState(Number(savedLevel) as GameLevel);
       }
       if (savedSound === "0") setSoundOnState(false);
+      if (savedSpeech === "0") setSpeechOnState(false);
     } catch {
       /* ignore */
     }
-    setHydrated(true);
+    setReady(true);
   }, []);
 
   const setLevel = useCallback((next: GameLevel) => {
@@ -62,6 +69,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const setSpeechOn = useCallback((on: boolean) => {
+    setSpeechOnState(on);
+    try {
+      localStorage.setItem(SPEECH_KEY, on ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const play = useCallback(
     (id: SoundId) => {
       playSound(id, soundOn);
@@ -70,17 +86,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ level, setLevel, soundOn, setSoundOn, play }),
-    [level, setLevel, soundOn, setSoundOn, play],
+    () => ({
+      level,
+      setLevel,
+      soundOn,
+      setSoundOn,
+      speechOn,
+      setSpeechOn,
+      play,
+      ready,
+    }),
+    [level, setLevel, soundOn, setSoundOn, speechOn, setSpeechOn, play, ready],
   );
-
-  if (!hydrated) {
-    return (
-      <div className="flex min-h-full flex-1 items-center justify-center text-lg text-stone-500">
-        よみこみ中…
-      </div>
-    );
-  }
 
   return (
     <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>

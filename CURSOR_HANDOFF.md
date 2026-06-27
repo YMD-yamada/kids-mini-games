@@ -11,28 +11,24 @@
 
 ## ゲーム（9種）
 
-| パス | 内容 |
-|------|------|
-| `/games/memory` | 神経衰弱 |
-| `/games/quiz` | クイズ |
-| `/games/reflex` | はやおし |
-| `/games/color` | いろあわせ |
-| `/games/count` | かぞえ |
-| `/games/same` | おなじ？ちがう？ |
-| `/games/sequence` | じゅんばん記憶 |
-| `/games/spot-diff` | まちがいさがし（AI背景 + 絵文字差分） |
-| `/games/hiragana` | ひらがななぞり書き |
+`/games/memory` · `/games/quiz` · `/games/reflex` · `/games/color` · `/games/count` · `/games/same` · `/games/sequence` · `/games/spot-diff` · `/games/hiragana`
 
-## 共通機能
+## 共通基盤
 
-- レベル: `lib/levels.ts` + `components/level-picker.tsx`
-- 効果音: `lib/sounds.ts`（Web Audio）
-- 読み上げ: `lib/speech.ts`（Web Speech API、ひらがな用）
+- 設定: `components/providers/settings-provider.tsx`（れべル・効果音、localStorage）
+- れべル: `lib/levels.ts` + `components/level-picker.tsx`
+- 効果音: `lib/sounds.ts`
+- 乱数: `lib/random.ts`（`buildSequencePool` 等）
+- タップ: `lib/use-pointer-tap.ts`（二重発火防止）
 
-## AI 画像
+## 品質メモ（2026-06）
 
-- `public/games/spot-diff/` — こうえん・おへや・うみ（GenerateImage で生成）
+- クイズ: 正解数に基づくクリアメッセージ、不正解時に正解ハイライト
+- じゅんばん: プールに必ず正解シンボルを含める
+- まちがいさがし: pointer イベント、スマホ縦並び、やさしいヒット半径拡大
+- ひらがな: DPR 正規化インク計測、進捗バー、自動読み上げ廃止
+- 全体: ローディングゲート削除、モーダル a11y、コピー統一
 
 ## 最終更新
 
-まちがいさがし・ひらがな書き練習を追加（計9ゲーム）。
+品質改善パス（バグ修正・UI 統一・a11y）。

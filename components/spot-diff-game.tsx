@@ -16,6 +16,7 @@ import {
   type SceneItem,
   type SpotPuzzle,
 } from "@/lib/spot-diff-data";
+import { useNormalizedPointerTap } from "@/lib/use-pointer-tap";
 
 function ScenePanel({
   label,
@@ -36,29 +37,19 @@ function ScenePanel({
   activeDiffs: DifferenceZone[];
   interactive: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handlePointer = (clientX: number, clientY: number) => {
-    if (!interactive || !onTap || !ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const x = (clientX - rect.left) / rect.width;
-    const y = (clientY - rect.top) / rect.height;
-    onTap(x, y);
-  };
+  const handlePointer = useNormalizedPointerTap(
+    (point) => onTap?.(point.x, point.y),
+    interactive && !!onTap,
+  );
 
   return (
     <div className="flex flex-1 flex-col gap-1">
       <p className="text-center text-sm font-bold text-stone-600">{label}</p>
       <div
-        ref={ref}
-        className={`relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-2 ${
+        className={`relative aspect-[4/3] w-full overflow-hidden rounded-2xl ring-2 touch-none ${
           interactive ? "ring-orange-300 cursor-pointer" : "ring-stone-200"
         }`}
-        onClick={(e) => handlePointer(e.clientX, e.clientY)}
-        onTouchEnd={(e) => {
-          const t = e.changedTouches[0];
-          if (t) handlePointer(t.clientX, t.clientY);
-        }}
+        onPointerUp={handlePointer}
         role={interactive ? "button" : undefined}
         aria-label={interactive ? "ちがう ところを タップ" : label}
       >
@@ -67,7 +58,7 @@ function ScenePanel({
           alt=""
           fill
           className="object-cover"
-          sizes="(max-width: 512px) 50vw, 240px"
+          sizes="(max-width: 640px) 100vw, 320px"
           priority
         />
         {items.map((item) => (
@@ -96,8 +87,8 @@ function ScenePanel({
                   style={{
                     left: `${d.x * 100}%`,
                     top: `${d.y * 100}%`,
-                    width: `${d.radius * 200}%`,
-                    height: `${d.radius * 200}%`,
+                    width: `${d.radius * 220}%`,
+                    height: `${d.radius * 220}%`,
                     transform: "translate(-50%, -50%)",
                   }}
                   aria-hidden
@@ -136,6 +127,16 @@ export function SpotDiffGame() {
   const [foundIds, setFoundIds] = useState<Set<string>>(new Set());
   const [feedback, setFeedback] = useState<"idle" | "ok" | "ng">("idle");
   const [gameComplete, setGameComplete] = useState(false);
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearAdvanceTimer = () => {
+    if (advanceTimer.current) {
+      clearTimeout(advanceTimer.current);
+      advanceTimer.current = null;
+    }
+  };
+
+  useEffect(() => () => clearAdvanceTimer(), []);
 
   const initPuzzle = useCallback(
     (index: number) => {
@@ -149,29 +150,32 @@ export function SpotDiffGame() {
   );
 
   useEffect(() => {
+    clearAdvanceTimer();
     setPuzzleIndex(0);
     setGameComplete(false);
     initPuzzle(0);
   }, [level, initPuzzle]);
 
   const handleTap = (x: number, y: number) => {
-    if (feedback !== "idle") return;
-    play("tap");
+    if (feedback !== "idle" || gameComplete) return;
 
+    const hitRadiusBoost = level === 1 ? 1.25 : 1;
     const hit = activeDiffs.find(
       (d) =>
         !foundIds.has(d.id) &&
-        Math.hypot(d.x - x, d.y - y) <= d.radius,
+        Math.hypot(d.x - x, d.y - y) <= d.radius * hitRadiusBoost,
     );
 
     if (hit) {
-      play("match");
+      play("tap");
       const next = new Set(foundIds);
       next.add(hit.id);
       setFoundIds(next);
       setFeedback("ok");
+
       if (next.size >= activeDiffs.length) {
-        setTimeout(() => {
+        clearAdvanceTimer();
+        advanceTimer.current = setTimeout(() => {
           const isLast = puzzleIndex >= cfg.puzzleCount - 1;
           if (isLast) {
             setGameComplete(true);
@@ -180,11 +184,13 @@ export function SpotDiffGame() {
             setPuzzleIndex(nextIndex);
             initPuzzle(nextIndex);
           }
+          setFeedback("idle");
         }, 1200);
       } else {
         setTimeout(() => setFeedback("idle"), 800);
       }
     } else {
+      play("tap");
       setFeedback("ng");
       setTimeout(() => setFeedback("idle"), 900);
     }
@@ -193,6 +199,7 @@ export function SpotDiffGame() {
   const allFound = foundIds.size >= activeDiffs.length;
 
   const reset = () => {
+    clearAdvanceTimer();
     setPuzzleIndex(0);
     setGameComplete(false);
     initPuzzle(0);
@@ -215,7 +222,7 @@ export function SpotDiffGame() {
 
       <ProgressStars current={foundIds.size} total={activeDiffs.length} />
 
-      <div className="flex gap-2 sm:gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-3">
         <ScenePanel
           label="ひだり"
           items={puzzle.leftItems}

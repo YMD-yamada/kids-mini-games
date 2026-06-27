@@ -2,10 +2,14 @@
 
 :root {
   --background: #fff8f0;
-  --foreground: #1a1a1a;
-  --kid-card: #ffffff;
-  --kid-accent: #f97316;
-  --kid-muted: #57534e;
+  --foreground: #1c1917;
+  --surface: #ffffff;
+  --accent: #f97316;
+  --accent-soft: #ffedd5;
+  --muted: #78716c;
+  --ring: #fde68a;
+  --success: #16a34a;
+  --success-soft: #dcfce7;
 }
 
 @theme inline {
@@ -16,12 +20,26 @@
 
 html {
   color-scheme: light;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @keyframes kid-pulse {
@@ -36,7 +54,7 @@ body {
 
 @keyframes win-pop {
   0% {
-    transform: scale(0.85);
+    transform: scale(0.88);
     opacity: 0;
   }
   100% {
@@ -46,9 +64,20 @@ body {
 }
 
 .kid-pulse {
-  animation: kid-pulse 1.2s ease-in-out infinite;
+  animation: kid-pulse 1.4s ease-in-out infinite;
 }
 
 .win-pop {
   animation: win-pop 0.35s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kid-pulse,
+  .win-pop {
+    animation: none;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
 }

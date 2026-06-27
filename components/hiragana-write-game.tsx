@@ -15,17 +15,18 @@ import {
 import { hiraganaLevelConfig } from "@/lib/levels";
 import { speakJapanese } from "@/lib/speech";
 
-function countInkPixels(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const data = ctx.getImageData(0, 0, w, h).data;
+function measureInk(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+  const dpr = window.devicePixelRatio || 1;
+  const raw = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
   let count = 0;
-  for (let i = 3; i < data.length; i += 4) {
-    if (data[i] > 20) count++;
+  for (let i = 3; i < raw.length; i += 4) {
+    if (raw[i] > 20) count++;
   }
-  return count;
+  return Math.round(count / (dpr * dpr));
 }
 
 export function HiraganaWriteGame() {
-  const { level, play } = useSettings();
+  const { level, play, speechOn } = useSettings();
   const cfg = hiraganaLevelConfig[level];
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const drawing = useRef(false);
@@ -40,6 +41,7 @@ export function HiraganaWriteGame() {
   const [inkAmount, setInkAmount] = useState(0);
 
   const current = chars[index];
+  const inkProgress = Math.min(100, Math.round((inkAmount / cfg.minInkPixels) * 100));
 
   const clearCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -65,18 +67,18 @@ export function HiraganaWriteGame() {
   useEffect(() => {
     clearCanvas();
     setFeedback("idle");
-    if (current) speakJapanese(current.reading);
-  }, [index, current?.char, clearCanvas]);
+  }, [index, clearCanvas]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
     const ctx = canvas.getContext("2d");
     if (ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -85,12 +87,6 @@ export function HiraganaWriteGame() {
     }
     clearCanvas();
   }, [level, cfg.strokeWidth, clearCanvas, current?.char]);
-
-  const getPoint = (clientX: number, clientY: number) => {
-    const canvas = canvasRef.current!;
-    const rect = canvas.getBoundingClientRect();
-    return { x: clientX - rect.left, y: clientY - rect.top };
-  };
 
   const startDraw = (x: number, y: number) => {
     drawing.current = true;
@@ -116,8 +112,14 @@ export function HiraganaWriteGame() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (canvas && ctx) {
-      setInkAmount(countInkPixels(ctx, canvas.width, canvas.height));
+      setInkAmount(measureInk(canvas, ctx));
     }
+  };
+
+  const getPoint = (clientX: number, clientY: number) => {
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    return { x: clientX - rect.left, y: clientY - rect.top };
   };
 
   const handleDone = () => {
@@ -126,19 +128,18 @@ export function HiraganaWriteGame() {
       setTimeout(() => setFeedback("idle"), 900);
       return;
     }
-    play("match");
     setFeedback("ok");
-    const nextCompleted = completed + 1;
-    setCompleted(nextCompleted);
+    setCompleted((c) => c + 1);
     setTimeout(() => {
       setFeedback("idle");
-      if (index >= chars.length - 1) return;
-      setIndex((i) => i + 1);
+      if (index < chars.length - 1) {
+        setIndex((i) => i + 1);
+      }
     }, 1000);
   };
 
   const speakCurrent = () => {
-    if (current) speakJapanese(current.reading);
+    if (current && speechOn) speakJapanese(current.reading);
     play("tap");
   };
 
@@ -151,9 +152,9 @@ export function HiraganaWriteGame() {
       <GameInstruction
         emoji="✏️"
         steps={[
-          "おおきな もじ を なぞる",
-          "ゆび や ペン で かく",
-          "「できた！」を おす",
+          "🔊 で よみかたを きく",
+          "うすい もじ に そって かく",
+          "「できた！」で つぎへ",
         ]}
       />
 
@@ -164,7 +165,11 @@ export function HiraganaWriteGame() {
           <p className="text-sm font-bold text-stone-500">
             {index + 1} / {chars.length}
           </p>
-          <KidButton variant="secondary" className="min-h-10 px-4 py-2 text-base" onClick={speakCurrent}>
+          <KidButton
+            variant="secondary"
+            className="min-h-10 px-4 py-2 text-base"
+            onClick={speakCurrent}
+          >
             🔊 よみかた
           </KidButton>
         </div>
@@ -190,27 +195,35 @@ export function HiraganaWriteGame() {
           <canvas
             ref={canvasRef}
             className="absolute inset-0 h-full w-full rounded-2xl bg-amber-50/80 ring-2 ring-amber-200"
-            onMouseDown={(e) => startDraw(e.clientX, e.clientY)}
-            onMouseMove={(e) => drawLine(e.clientX, e.clientY)}
-            onMouseUp={endDraw}
-            onMouseLeave={endDraw}
-            onTouchStart={(e) => {
+            aria-label={`「${current.char}」を なぞって かく ばしょ`}
+            onPointerDown={(e) => {
               e.preventDefault();
-              const t = e.touches[0];
-              startDraw(t.clientX, t.clientY);
+              const p = getPoint(e.clientX, e.clientY);
+              startDraw(p.x, p.y);
             }}
-            onTouchMove={(e) => {
+            onPointerMove={(e) => {
+              if (!drawing.current) return;
               e.preventDefault();
-              const t = e.touches[0];
-              drawLine(t.clientX, t.clientY);
+              const p = getPoint(e.clientX, e.clientY);
+              drawLine(p.x, p.y);
             }}
-            onTouchEnd={endDraw}
+            onPointerUp={endDraw}
+            onPointerLeave={endDraw}
+            onPointerCancel={endDraw}
           />
         </div>
 
-        <p className="mt-2 text-center text-sm text-stone-400">
-          うすい もじ に そって なぞってね
-        </p>
+        <div className="mt-3">
+          <div className="h-2 overflow-hidden rounded-full bg-stone-100">
+            <div
+              className="h-full rounded-full bg-orange-400 transition-all duration-200"
+              style={{ width: `${inkProgress}%` }}
+            />
+          </div>
+          <p className="mt-1 text-center text-xs text-stone-400">
+            {inkProgress < 100 ? "もっと 大きく なぞってね" : "いっぱい かけたね！"}
+          </p>
+        </div>
       </div>
 
       <FeedbackBanner

@@ -80,9 +80,12 @@ export function CountingGame() {
 
       <ProgressStars current={correct} total={cfg.rounds} />
 
-      <div className="rounded-3xl bg-white p-6 text-center ring-2 ring-amber-100">
+      <div
+        className="rounded-3xl bg-white p-6 text-center ring-2 ring-amber-100"
+        aria-label={`${round.emoji}が ${round.count}こ`}
+      >
         <p className="text-sm font-bold text-stone-500">なんこ ある？</p>
-        <p className="mt-3 flex flex-wrap justify-center gap-2 text-4xl">
+        <p className="mt-3 flex flex-wrap justify-center gap-2 text-4xl" aria-hidden>
           {Array.from({ length: round.count }, (_, i) => (
             <span key={i} aria-hidden>
               {round.emoji}

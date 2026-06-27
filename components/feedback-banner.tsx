@@ -1,25 +1,35 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSettings } from "@/components/providers/settings-provider";
 
 type FeedbackBannerProps = {
   kind: "ok" | "ng" | null;
   okText?: string;
   ngText?: string;
+  /** When false, caller handles audio (e.g. already played). */
+  playSound?: boolean;
 };
 
 export function FeedbackBanner({
   kind,
   okText = "せいかい！",
   ngText = "ちがうよ、もういちど！",
+  playSound: shouldPlay = true,
 }: FeedbackBannerProps) {
   const { play } = useSettings();
+  const lastKind = useRef<"ok" | "ng" | null>(null);
 
   useEffect(() => {
+    if (!kind || !shouldPlay || kind === lastKind.current) return;
+    lastKind.current = kind;
     if (kind === "ok") play("match");
     if (kind === "ng") play("wrong");
-  }, [kind, play]);
+  }, [kind, play, shouldPlay]);
+
+  useEffect(() => {
+    if (!kind) lastKind.current = null;
+  }, [kind]);
 
   if (!kind) return null;
 
@@ -31,6 +41,7 @@ export function FeedbackBanner({
           : "bg-amber-50 ring-amber-200"
       }`}
       role="status"
+      aria-live="polite"
     >
       <p className="text-4xl" aria-hidden>
         {kind === "ok" ? "✨" : "🤔"}

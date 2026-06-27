@@ -5,12 +5,18 @@ import { useSettings } from "@/components/providers/settings-provider";
 
 export function LevelPicker() {
   const { level, setLevel, play } = useSettings();
+  const activeOption = LEVEL_OPTIONS.find((o) => o.id === level);
 
   return (
     <div className="rounded-3xl bg-white p-4 shadow-sm ring-2 ring-amber-100">
-      <p className="mb-3 text-center text-sm font-bold text-stone-500">
-        レベルを えらんでね
+      <p className="mb-1 text-center text-sm font-bold text-stone-500">
+        れべるを えらんでね
       </p>
+      {activeOption ? (
+        <p className="mb-3 text-center text-xs text-stone-400">
+          {activeOption.hint}
+        </p>
+      ) : null}
       <div className="grid grid-cols-3 gap-2">
         {LEVEL_OPTIONS.map((opt) => {
           const active = level === opt.id;
@@ -19,6 +25,7 @@ export function LevelPicker() {
               key={opt.id}
               type="button"
               onClick={() => {
+                if (active) return;
                 play("tap");
                 setLevel(opt.id as GameLevel);
               }}
@@ -39,6 +46,9 @@ export function LevelPicker() {
           );
         })}
       </div>
+      <p className="mt-2 text-center text-xs text-stone-400">
+        れべルを かえると さいしょから はじまるよ
+      </p>
     </div>
   );
 }

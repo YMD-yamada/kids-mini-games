@@ -15,7 +15,7 @@ export function GameShell({
   showLevel = true,
 }: GameShellProps) {
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-lg flex-1 flex-col gap-5 px-4 py-6 sm:px-6">
+    <div className="mx-auto flex min-h-full w-full max-w-lg flex-1 flex-col gap-5 px-4 py-6 sm:max-w-xl sm:px-6">
       <header className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-2">
           <Link
@@ -26,12 +26,14 @@ export function GameShell({
           </Link>
           <SoundToggle />
         </div>
-        <h1 className="text-center text-2xl font-bold text-stone-800">{title}</h1>
+        <h1 className="text-center text-2xl font-bold tracking-tight text-stone-800">
+          {title}
+        </h1>
       </header>
 
       {showLevel ? <LevelPicker /> : null}
 
-      <div className="flex flex-1 flex-col gap-5">{children}</div>
+      <div className="flex flex-1 flex-col gap-5 pb-4">{children}</div>
     </div>
   );
 }

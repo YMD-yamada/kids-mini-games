@@ -3,7 +3,7 @@ import { SequenceGame } from "@/components/sequence-game";
 
 export default function SequencePage() {
   return (
-    <GameShell title="じゅんばん おぼえ">
+    <GameShell title="じゅんばん">
       <SequenceGame />
     </GameShell>
   );

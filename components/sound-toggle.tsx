@@ -20,7 +20,7 @@ export function SoundToggle() {
       <span className="text-xl" aria-hidden>
         {soundOn ? "🔊" : "🔇"}
       </span>
-      <span>{soundOn ? "おと ON" : "おと OFF"}</span>
+      <span>{soundOn ? "おと オン" : "おと オフ"}</span>
     </button>
   );
 }

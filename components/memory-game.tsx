@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GameInstruction } from "@/components/game-instruction";
 import { KidButton } from "@/components/kid-button";
 import { ProgressStars } from "@/components/progress-stars";
@@ -8,6 +8,7 @@ import { useSettings } from "@/components/providers/settings-provider";
 import { WinCelebration } from "@/components/win-celebration";
 import { MEMORY_SYMBOLS, pickRandom } from "@/lib/quiz-data";
 import { memoryLevelConfig } from "@/lib/levels";
+import { shuffle } from "@/lib/random";
 
 type Card = {
   id: string;
@@ -15,15 +16,6 @@ type Card = {
   faceUp: boolean;
   matched: boolean;
 };
-
-function shuffle<T>(items: T[]): T[] {
-  const a = [...items];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 function buildDeck(pairs: number): Card[] {
   const symbols = pickRandom(MEMORY_SYMBOLS, pairs);
@@ -42,6 +34,17 @@ export function MemoryGame() {
   const [lockBoard, setLockBoard] = useState(false);
   const [moves, setMoves] = useState(0);
   const [peeking, setPeeking] = useState(config.peekMs > 0);
+  const peekTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flipTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTimers = useCallback(() => {
+    if (peekTimerRef.current) clearTimeout(peekTimerRef.current);
+    if (flipTimerRef.current) clearTimeout(flipTimerRef.current);
+    peekTimerRef.current = null;
+    flipTimerRef.current = null;
+  }, []);
+
+  useEffect(() => () => clearTimers(), [clearTimers]);
 
   const matchedCount = useMemo(
     () => cards.filter((c) => c.matched).length / 2,
@@ -50,6 +53,7 @@ export function MemoryGame() {
   const won = cards.length > 0 && cards.every((c) => c.matched);
 
   const reset = useCallback(() => {
+    clearTimers();
     const cfg = memoryLevelConfig[level];
     setCards(buildDeck(cfg.pairs));
     setPending([]);
@@ -58,7 +62,7 @@ export function MemoryGame() {
     if (cfg.peekMs > 0) {
       setPeeking(true);
       setCards((prev) => prev.map((c) => ({ ...c, faceUp: true })));
-      setTimeout(() => {
+      peekTimerRef.current = setTimeout(() => {
         setCards((prev) =>
           prev.map((c) => (c.matched ? c : { ...c, faceUp: false })),
         );
@@ -67,7 +71,7 @@ export function MemoryGame() {
     } else {
       setPeeking(false);
     }
-  }, [level]);
+  }, [level, clearTimers]);
 
   useEffect(() => {
     reset();
@@ -114,7 +118,7 @@ export function MemoryGame() {
     }
 
     play("wrong");
-    setTimeout(() => {
+    flipTimerRef.current = setTimeout(() => {
       setCards((prev) =>
         prev.map((c) =>
           c.id === firstId || c.id === secondId
@@ -182,7 +186,7 @@ export function MemoryGame() {
       </div>
 
       <KidButton variant="secondary" className="self-center" onClick={reset}>
-        あたらしく はじめる
+        はじめから
       </KidButton>
 
       <WinCelebration show={won} onAgain={reset} />

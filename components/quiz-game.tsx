@@ -9,6 +9,7 @@ import { useSettings } from "@/components/providers/settings-provider";
 import { WinCelebration } from "@/components/win-celebration";
 import { getQuizForLevel } from "@/lib/quiz-data";
 import { quizLevelConfig } from "@/lib/levels";
+import { shuffle } from "@/lib/random";
 
 export function QuizGame() {
   const { level, play } = useSettings();
@@ -29,16 +30,16 @@ export function QuizGame() {
 
   const current = questions[index];
   const isLast = index >= questions.length - 1;
-  const finished = feedback === "ok" && isLast;
+  const showWin = feedback === "ok" && isLast;
 
   const displayChoices = useMemo(() => {
     if (!current) return [];
     const choices = [...current.choices];
-    if (choices.length <= cfg.choiceCount) return choices;
+    if (choices.length <= cfg.choiceCount) return shuffle(choices);
     const correct = choices.find((c) => c.correct)!;
     const wrong = choices.filter((c) => !c.correct);
-    const picked = wrong.sort(() => Math.random() - 0.5).slice(0, cfg.choiceCount - 1);
-    return [...picked, correct].sort(() => Math.random() - 0.5);
+    const picked = shuffle(wrong).slice(0, cfg.choiceCount - 1);
+    return shuffle([...picked, correct]);
   }, [current, cfg.choiceCount]);
 
   const restart = () => {
@@ -50,21 +51,20 @@ export function QuizGame() {
 
   const advance = () => {
     setFeedback("idle");
-    if (isLast) {
-      restart();
-    } else {
-      setIndex((i) => i + 1);
-    }
+    setIndex((i) => i + 1);
   };
 
   const handleChoice = (correct: boolean) => {
     if (feedback !== "idle" || !current) return;
     play("tap");
-    if (correct) {
-      setCorrectCount((c) => c + 1);
-    }
+    if (correct) setCorrectCount((c) => c + 1);
     setFeedback(correct ? "ok" : "ng");
   };
+
+  const winMessage =
+    correctCount === questions.length
+      ? `${questions.length} もん ぜんぶ せいかい！`
+      : `${questions.length} もん中 ${correctCount} もん せいかい！`;
 
   if (!current) return null;
 
@@ -75,7 +75,7 @@ export function QuizGame() {
         steps={[
           "もんだい を よむ",
           "こたえ を タップ",
-          "せいかい したら つぎへ！",
+          "ぜんぶ こたえたら クリア！",
         ]}
       />
 
@@ -104,14 +104,11 @@ export function QuizGame() {
           const base =
             "flex min-h-20 flex-col items-center justify-center rounded-3xl text-xl font-bold shadow-md ring-2 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 active:scale-[0.98] sm:min-h-24 sm:text-2xl";
           const surface = c.surfaceClass ?? "bg-white text-stone-800 ring-amber-200";
-          const stateClass =
-            feedback === "idle"
-              ? "hover:bg-amber-50"
-              : c.correct && feedback === "ok"
-                ? "ring-green-400 ring-4"
-                : !c.correct && feedback === "ng"
-                  ? "opacity-50"
-                  : "";
+          let stateClass = "hover:bg-amber-50";
+          if (feedback !== "idle") {
+            if (c.correct) stateClass = "ring-green-400 ring-4";
+            else if (feedback === "ng") stateClass = "opacity-45";
+          }
 
           return (
             <button
@@ -129,7 +126,7 @@ export function QuizGame() {
 
       <FeedbackBanner kind={feedback === "idle" ? null : feedback === "ok" ? "ok" : "ng"} />
 
-      {feedback === "ok" && !finished ? (
+      {feedback === "ok" && !showWin ? (
         <KidButton className="w-full" onClick={advance}>
           つぎの もんだい →
         </KidButton>
@@ -142,14 +139,10 @@ export function QuizGame() {
       ) : null}
 
       <KidButton variant="secondary" className="self-center" onClick={restart}>
-        さいしょから
+        はじめから
       </KidButton>
 
-      <WinCelebration
-        show={finished}
-        message={`${questions.length} もん ぜんぶ せいかい！`}
-        onAgain={restart}
-      />
+      <WinCelebration show={showWin} message={winMessage} onAgain={restart} />
     </div>
   );
 }

@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FeedbackBanner } from "@/components/feedback-banner";
 import { GameInstruction } from "@/components/game-instruction";
 import { KidButton } from "@/components/kid-button";
 import { ProgressStars } from "@/components/progress-stars";
 import { useSettings } from "@/components/providers/settings-provider";
 import { WinCelebration } from "@/components/win-celebration";
-import { SEQUENCE_SYMBOLS, pickRandom } from "@/lib/quiz-data";
+import { buildSequencePool, pickRandom } from "@/lib/random";
+import { SEQUENCE_SYMBOLS } from "@/lib/quiz-data";
 import { sequenceLevelConfig } from "@/lib/levels";
 
 type Phase = "show" | "input" | "result";
@@ -30,6 +31,8 @@ export function SequenceGame() {
   const [feedback, setFeedback] = useState<"idle" | "ok" | "ng">("idle");
   const [pool, setPool] = useState<string[]>([]);
 
+  const poolSize = Math.min(6, cfg.length + 2);
+
   const startRound = useCallback(() => {
     const seq = makeSequence(cfg.length);
     setSequence(seq);
@@ -37,8 +40,8 @@ export function SequenceGame() {
     setPhase("show");
     setShowIndex(0);
     setFeedback("idle");
-    setPool(pickRandom(SEQUENCE_SYMBOLS, Math.min(6, cfg.length + 2)));
-  }, [cfg.length]);
+    setPool(buildSequencePool(seq, SEQUENCE_SYMBOLS, poolSize));
+  }, [cfg.length, poolSize]);
 
   const reset = useCallback(() => {
     setRoundIndex(0);
@@ -80,13 +83,12 @@ export function SequenceGame() {
   };
 
   const nextRound = () => {
-    const next = roundIndex + 1;
-    if (next >= cfg.rounds) return;
-    setRoundIndex(next);
+    setRoundIndex((i) => i + 1);
     startRound();
   };
 
-  const finished = feedback === "ok" && roundIndex >= cfg.rounds - 1;
+  const finished =
+    feedback === "ok" && roundIndex >= cfg.rounds - 1;
 
   return (
     <div className="flex flex-col gap-5">
@@ -109,7 +111,7 @@ export function SequenceGame() {
               {showIndex < sequence.length ? sequence[showIndex] : "👀"}
             </p>
             <p className="text-base text-stone-600">
-              {showIndex + 1} / {sequence.length}
+              {Math.min(showIndex + 1, sequence.length)} / {sequence.length}
             </p>
           </>
         ) : (
@@ -117,7 +119,7 @@ export function SequenceGame() {
             <p className="text-sm font-bold text-stone-500">
               おぼえた とおり に タップ！
             </p>
-            <div className="flex gap-2">
+            <div className="flex gap-2" aria-label="入力した じゅんばん">
               {sequence.map((_, i) => (
                 <span
                   key={i}
@@ -137,9 +139,9 @@ export function SequenceGame() {
 
       {phase === "input" ? (
         <div className="grid grid-cols-3 gap-3">
-          {pool.map((sym) => (
+          {pool.map((sym, i) => (
             <button
-              key={sym}
+              key={`${sym}-${i}`}
               type="button"
               onClick={() => handleTap(sym)}
               className="flex aspect-square items-center justify-center rounded-3xl bg-amber-50 text-4xl shadow-md ring-2 ring-amber-200 transition hover:bg-amber-100 active:scale-[0.98]"

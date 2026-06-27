@@ -10,16 +10,19 @@ export function GameInstruction({ emoji, steps }: GameInstructionProps) {
         <span className="text-4xl" aria-hidden>
           {emoji}
         </span>
-        <ol className="flex flex-1 flex-col gap-2 text-base font-bold text-sky-900">
+        <ol className="flex flex-1 flex-col gap-2" aria-label="あそびかた">
           {steps.map((step, i) => (
-            <li key={step} className="flex items-center gap-2">
+            <li key={step} className="flex items-center gap-2 text-base font-bold text-sky-900">
               <span
                 className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sky-200 text-sm"
                 aria-hidden
               >
                 {i + 1}
               </span>
-              <span>{step}</span>
+              <span>
+                <span className="sr-only">ステップ{i + 1}:</span>
+                {step}
+              </span>
             </li>
           ))}
         </ol>
