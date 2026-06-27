@@ -19,6 +19,8 @@ type SettingsContextValue = {
   setSoundOn: (on: boolean) => void;
   speechOn: boolean;
   setSpeechOn: (on: boolean) => void;
+  pictureMode: boolean;
+  setPictureMode: (on: boolean) => void;
   play: (id: SoundId) => void;
   ready: boolean;
 };
@@ -28,11 +30,13 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 const LEVEL_KEY = "kids-games-level";
 const SOUND_KEY = "kids-games-sound";
 const SPEECH_KEY = "kids-games-speech";
+const PICTURE_KEY = "kids-games-picture";
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [level, setLevelState] = useState<GameLevel>(1);
   const [soundOn, setSoundOnState] = useState(true);
   const [speechOn, setSpeechOnState] = useState(true);
+  const [pictureMode, setPictureModeState] = useState(true);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -40,11 +44,13 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const savedLevel = localStorage.getItem(LEVEL_KEY);
       const savedSound = localStorage.getItem(SOUND_KEY);
       const savedSpeech = localStorage.getItem(SPEECH_KEY);
+      const savedPicture = localStorage.getItem(PICTURE_KEY);
       if (savedLevel === "1" || savedLevel === "2" || savedLevel === "3") {
         setLevelState(Number(savedLevel) as GameLevel);
       }
       if (savedSound === "0") setSoundOnState(false);
       if (savedSpeech === "0") setSpeechOnState(false);
+      if (savedPicture === "0") setPictureModeState(false);
     } catch {
       /* ignore */
     }
@@ -78,6 +84,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const setPictureMode = useCallback((on: boolean) => {
+    setPictureModeState(on);
+    try {
+      localStorage.setItem(PICTURE_KEY, on ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
   const play = useCallback(
     (id: SoundId) => {
       playSound(id, soundOn);
@@ -93,10 +108,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setSoundOn,
       speechOn,
       setSpeechOn,
+      pictureMode,
+      setPictureMode,
       play,
       ready,
     }),
-    [level, setLevel, soundOn, setSoundOn, speechOn, setSpeechOn, play, ready],
+    [level, setLevel, soundOn, setSoundOn, speechOn, setSpeechOn, pictureMode, setPictureMode, play, ready],
   );
 
   return (

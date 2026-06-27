@@ -4,15 +4,21 @@ import { LEVEL_OPTIONS, type GameLevel } from "@/lib/levels";
 import { useSettings } from "@/components/providers/settings-provider";
 
 export function LevelPicker() {
-  const { level, setLevel, play } = useSettings();
+  const { level, setLevel, play, pictureMode } = useSettings();
   const activeOption = LEVEL_OPTIONS.find((o) => o.id === level);
 
   return (
     <div className="rounded-3xl bg-white p-4 shadow-sm ring-2 ring-amber-100">
-      <p className="mb-1 text-center text-sm font-bold text-stone-500">
-        れべるを えらんでね
-      </p>
-      {activeOption ? (
+      {!pictureMode ? (
+        <p className="mb-1 text-center text-sm font-bold text-stone-500">
+          れべるを えらんでね
+        </p>
+      ) : (
+        <p className="mb-1 text-center text-2xl" aria-hidden>
+          ⭐
+        </p>
+      )}
+      {activeOption && !pictureMode ? (
         <p className="mb-3 text-center text-xs text-stone-400">
           {activeOption.hint}
         </p>
@@ -35,20 +41,20 @@ export function LevelPicker() {
                   : "bg-stone-50 ring-1 ring-stone-200 hover:bg-amber-50"
               } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500`}
               aria-pressed={active}
+              aria-label={pictureMode ? opt.label : undefined}
             >
-              <span className="text-2xl" aria-hidden>
+              <span className={pictureMode ? "text-4xl" : "text-2xl"} aria-hidden>
                 {opt.emoji}
               </span>
-              <span className="text-sm font-bold text-stone-800">
-                {opt.label}
-              </span>
+              {!pictureMode ? (
+                <span className="text-sm font-bold text-stone-800">
+                  {opt.label}
+                </span>
+              ) : null}
             </button>
           );
         })}
       </div>
-      <p className="mt-2 text-center text-xs text-stone-400">
-        れべルを かえると さいしょから はじまるよ
-      </p>
     </div>
   );
 }

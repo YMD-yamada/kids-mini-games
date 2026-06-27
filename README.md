@@ -1,51 +1,43 @@
 # みんなのミニゲーム
 
-未就学〜低学年向けのミニゲーム集（Next.js）。アカウント・外部トラッキングなし。
+未就学〜低学年向けミニゲーム（Next.js）。**文字が読めなくても遊べる** えモード・読み上げ付き。
 
-## 公開 URL
+## 本番 URL（Vercel）
 
-**本番:** https://ymd-yamada.github.io/kids-mini-games/
+**https://kids-mini-games.vercel.app**（デプロイ後）
 
-**リポジトリ:** https://github.com/YMD-yamada/kids-mini-games
+旧 GitHub Pages: https://ymd-yamada.github.io/kids-mini-games/（バックアップ）
 
-## ゲーム一覧（9種）
+## 子ども向けの工夫
 
-| ゲーム | 内容 |
-|--------|------|
-| かーどめくり | 神経衰弱（レベルで枚数・peek ヒント） |
-| どれだ？ | クイズ（12問プール） |
-| はやおし | 反応速度（連続成功でクリア） |
-| いろあわせ | 色の一致 |
-| かぞえよう | 数え上げ |
-| おなじ？ちがう？ | 絵の比較 |
-| じゅんばん | 順番記憶 |
-| まちがいさがし | AI背景 + 絵文字差分 |
-| ひらがなれんしゅう | なぞり書き + 読み上げ |
+- **🖼️ えモード** — 文字を減らし、大きな絵文字だけで操作
+- **🔊 読み上げ** — 各ゲームの説明・問題を音声で再生
+- **👂 きいて えらぶ** — 声を聞いて絵を選ぶ（読みの練習）
+- **🔤 もじを きく** — ひらがなの声を聞いて文字を選ぶ
 
-## 共通機能
+## ゲーム（11種）
 
-- **れべル**（やさしい / ふつう / チャレンジ）— 端末に保存
-- **効果音**（Web Audio）— オン/オフ切替
-- **読み上げ**（ひらがなゲーム）— 🔊 よみかた ボタン
+`lib/games-config.ts` を参照
 
 ## ローカル開発
 
 ```bash
-cd kids-mini-games
 npm install
 npm run dev
 ```
 
-## デプロイ
+## Vercel デプロイ（推奨）
 
-GitHub Pages: `master` への push で自動デプロイ（`.github/workflows/deploy-pages.yml`）。
+1. [Vercel](https://vercel.com) で `YMD-yamada/kids-mini-games` をインポート
+2. GitHub Secrets に設定:
+   - `VERCEL_TOKEN`
+   - `VERCEL_ORG_ID`
+   - `VERCEL_PROJECT_ID`
+3. `master` へ push で `.github/workflows/deploy-vercel.yml` が本番デプロイ
 
-Vercel: リポジトリをインポート（`GITHUB_PAGES` 環境変数は未設定）。
+`GITHUB_PAGES` 環境変数は **設定しない**（ルート URL で動作）。
 
-## ビルド
+## ymd-portfolio 連携
 
-```bash
-npm run build
-```
-
-Windows arm64 など Turbopack 非対応環境では webpack ビルドを使用しています。
+`ymd-portfolio` の `config/apps.config.json` に本番 URL を登録済み。  
+子供用フィルタ（`audience: kid`）で表示されます。

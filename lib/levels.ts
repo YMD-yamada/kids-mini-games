@@ -91,3 +91,21 @@ export const hiraganaLevelConfig: Record<
   2: { guideOpacity: 0.25, strokeWidth: 14, minInkPixels: 1200 },
   3: { guideOpacity: 0.15, strokeWidth: 12, minInkPixels: 1500 },
 };
+
+export const listenLevelConfig: Record<
+  GameLevel,
+  { choiceCount: number; rounds: number }
+> = {
+  1: { choiceCount: 2, rounds: 5 },
+  2: { choiceCount: 3, rounds: 7 },
+  3: { choiceCount: 4, rounds: 10 },
+};
+
+export const charListenLevelConfig: Record<
+  GameLevel,
+  { choiceCount: number; rounds: number }
+> = {
+  1: { choiceCount: 2, rounds: 5 },
+  2: { choiceCount: 3, rounds: 8 },
+  3: { choiceCount: 4, rounds: 10 },
+};
