@@ -1,20 +1,24 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { KidText } from "@/components/ui/kid-text";
 import { useSettings } from "@/components/providers/settings-provider";
 
 type FeedbackBannerProps = {
   kind: "ok" | "ng" | null;
   okText?: string;
+  okHiragana?: string;
   ngText?: string;
-  /** When false, caller handles audio (e.g. already played). */
+  ngHiragana?: string;
   playSound?: boolean;
 };
 
 export function FeedbackBanner({
   kind,
   okText = "せいかい！",
+  okHiragana = "せいかい！",
   ngText = "ちがうよ、もういちど！",
+  ngHiragana = "ちがうよ、もういちど！",
   playSound: shouldPlay = true,
 }: FeedbackBannerProps) {
   const { play } = useSettings();
@@ -35,7 +39,7 @@ export function FeedbackBanner({
 
   return (
     <div
-      className={`rounded-3xl p-4 text-center ring-2 ${
+      className={`rounded-[1.75rem] p-4 text-center ring-2 ${
         kind === "ok"
           ? "bg-green-50 ring-green-200"
           : "bg-amber-50 ring-amber-200"
@@ -46,13 +50,14 @@ export function FeedbackBanner({
       <p className="text-4xl" aria-hidden>
         {kind === "ok" ? "✨" : "🤔"}
       </p>
-      <p
-        className={`mt-1 text-xl font-bold ${
+      <KidText
+        as="p"
+        hiragana={kind === "ok" ? okHiragana : ngHiragana}
+        standard={kind === "ok" ? okText : ngText}
+        className={`mt-1 font-display text-xl font-bold ${
           kind === "ok" ? "text-green-800" : "text-amber-900"
         }`}
-      >
-        {kind === "ok" ? okText : ngText}
-      </p>
+      />
     </div>
   );
 }

@@ -101,6 +101,17 @@ export function getHiraganaSet(level: GameLevel): HiraganaChar[] {
   }
 }
 
+export function getHiraganaRows(level: GameLevel): HiraganaChar[][] {
+  switch (level) {
+    case 1:
+      return [HIRAGANA_VOWELS];
+    case 2:
+      return [HIRAGANA_KA, HIRAGANA_SA];
+    case 3:
+      return [HIRAGANA_TA, HIRAGANA_NA, HIRAGANA_HA];
+  }
+}
+
 export function shuffleChars(chars: HiraganaChar[]): HiraganaChar[] {
   return [...chars].sort(() => Math.random() - 0.5);
 }

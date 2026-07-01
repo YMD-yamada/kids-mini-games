@@ -1,21 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #fff8f0;
-  --foreground: #1c1917;
+  --background: #fff9f3;
+  --foreground: #292524;
   --surface: #ffffff;
+  --surface-soft: rgba(255, 255, 255, 0.72);
   --accent: #f97316;
+  --accent-hover: #ea580c;
   --accent-soft: #ffedd5;
+  --accent-ring: #fdba74;
   --muted: #78716c;
   --ring: #fde68a;
+  --ring-soft: #fef3c7;
   --success: #16a34a;
   --success-soft: #dcfce7;
+  --sky: #0ea5e9;
+  --sky-soft: #e0f2fe;
+  --sky-ring: #bae6fd;
+  --violet: #8b5cf6;
+  --violet-soft: #ede9fe;
+  --violet-ring: #ddd6fe;
+  --shadow-card: 0 10px 30px -12px rgba(120, 53, 15, 0.18);
+  --shadow-float: 0 16px 40px -16px rgba(120, 53, 15, 0.22);
+  --font-display: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
+  --font-body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-noto-sans-jp);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 html {
@@ -24,10 +40,19 @@ html {
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -15%, rgba(251, 191, 36, 0.16), transparent),
+    radial-gradient(ellipse 55% 45% at 100% 100%, rgba(167, 139, 250, 0.1), transparent),
+    radial-gradient(ellipse 50% 35% at 0% 85%, rgba(56, 189, 248, 0.1), transparent),
+    var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  line-height: 1.5;
+  font-family: var(--font-body), "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  line-height: 1.55;
+  min-height: 100%;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-body), sans-serif;
 }
 
 .sr-only {
@@ -63,6 +88,17 @@ body {
   }
 }
 
+@keyframes float-in {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .kid-pulse {
   animation: kid-pulse 1.4s ease-in-out infinite;
 }
@@ -71,9 +107,19 @@ body {
   animation: win-pop 0.35s ease-out;
 }
 
+.float-in {
+  animation: float-in 0.45s ease-out both;
+}
+
+.kid-hero-title {
+  font-family: var(--font-display), sans-serif;
+  letter-spacing: 0.02em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .kid-pulse,
-  .win-pop {
+  .win-pop,
+  .float-in {
     animation: none;
   }
 

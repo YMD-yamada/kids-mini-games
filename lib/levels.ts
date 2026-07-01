@@ -109,3 +109,18 @@ export const charListenLevelConfig: Record<
   2: { choiceCount: 3, rounds: 8 },
   3: { choiceCount: 4, rounds: 10 },
 };
+
+export const hiraWordLevelConfig: Record<
+  GameLevel,
+  { choiceCount: number; rounds: number }
+> = {
+  1: { choiceCount: 2, rounds: 5 },
+  2: { choiceCount: 3, rounds: 7 },
+  3: { choiceCount: 4, rounds: 10 },
+};
+
+export const hiraOrderLevelConfig: Record<GameLevel, { rowCount: number }> = {
+  1: { rowCount: 1 },
+  2: { rowCount: 2 },
+  3: { rowCount: 3 },
+};

@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
 import { AppProviders } from "@/components/app-providers";
 import "./globals.css";
-
-const notoSansJp = Noto_Sans_JP({
-  variable: "--font-noto-sans-jp",
-  subsets: ["latin"],
-  weight: ["500", "700"],
-});
 
 export const metadata: Metadata = {
   title: "みんなのミニゲーム",
@@ -20,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${notoSansJp.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+    <html lang="ja" className="h-full antialiased">
+      <body className="min-h-full flex flex-col text-[var(--foreground)]">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
