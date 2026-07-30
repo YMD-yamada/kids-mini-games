@@ -26,5 +26,5 @@
 
 ## Progress
 
-- Done: ゼロから作り直し（島マップ・5ゲーム・表示モード）
-- Next: portfolio 文言更新・personal-site 同期（必要なら）
+- Done: ゼロから作り直し（島マップ・5ゲーム・表示モード）・Vercel本番・portfolio 文言更新
+- Next: 実機で5島プレイ感を見て調整（必要なら）
