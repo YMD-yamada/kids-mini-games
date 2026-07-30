@@ -1,24 +1,26 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { KidButton } from "@/components/kid-button";
 import { KidText } from "@/components/ui/kid-text";
 import { useSettings } from "@/components/providers/settings-provider";
-import { useEffect, useRef } from "react";
 
 type WinCelebrationProps = {
+  show: boolean;
+  onAgain: () => void;
+  onHome?: () => void;
   title?: string;
   message?: string;
   hiraganaMessage?: string;
-  onAgain: () => void;
-  show: boolean;
 };
 
 export function WinCelebration({
+  show,
+  onAgain,
+  onHome,
   title = "クリア！",
   message = "すごいね！",
   hiraganaMessage,
-  onAgain,
-  show,
 }: WinCelebrationProps) {
   const { play } = useSettings();
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -29,20 +31,11 @@ export function WinCelebration({
     buttonRef.current?.focus();
   }, [show, play]);
 
-  useEffect(() => {
-    if (!show) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onAgain();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [show, onAgain]);
-
   if (!show) return null;
 
   return (
     <div
-      className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-20 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="win-title"
@@ -53,11 +46,11 @@ export function WinCelebration({
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-6xl" aria-hidden>
-          ⭐
+          🐰
         </p>
         <h2
           id="win-title"
-          className="mt-2 font-display text-3xl font-extrabold text-stone-800"
+          className="mt-2 font-display text-3xl font-extrabold text-slate-800"
         >
           {title}
         </h2>
@@ -65,11 +58,16 @@ export function WinCelebration({
           as="p"
           hiragana={hiraganaMessage ?? message}
           standard={message}
-          className="mt-2 text-lg text-stone-600"
+          className="mt-2 text-lg text-slate-600"
         />
         <KidButton ref={buttonRef} className="mt-6 w-full" onClick={onAgain}>
-          <KidText hiragana="もういちど" standard="もういちど" />
+          もういちど
         </KidButton>
+        {onHome ? (
+          <KidButton variant="secondary" className="mt-3 w-full" onClick={onHome}>
+            マップへ
+          </KidButton>
+        ) : null}
       </div>
     </div>
   );

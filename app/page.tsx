@@ -1,10 +1,9 @@
 "use client";
 
-import { GameCard } from "@/components/game-card";
 import { HomeSettings } from "@/components/home-settings";
+import { IslandMap } from "@/components/island-map";
 import { NarrateButton } from "@/components/narrate-button";
 import { KidText } from "@/components/ui/kid-text";
-import { GAME_SECTIONS, GAMES, gamesByCategory } from "@/lib/games-config";
 import { useReadingUI } from "@/lib/use-reading-ui";
 
 export default function Home() {
@@ -13,27 +12,32 @@ export default function Home() {
   return (
     <div className="mx-auto flex min-h-full w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6">
       <header className="float-in text-center">
-        <p className="text-5xl drop-shadow-sm" aria-hidden>
-          🌈
+        <p className="text-6xl drop-shadow-sm" aria-hidden>
+          🐰
         </p>
         <KidText
           as="h1"
-          hiragana="みんなの ミニゲーム"
-          standard="みんなのミニゲーム"
-          picture={<span className="text-5xl" aria-hidden>🎮</span>}
-          className="kid-hero-title mt-2 text-3xl font-extrabold text-stone-800 sm:text-4xl"
+          hiragana="ぴょんの あそびじま"
+          standard="ぴょんのあそびじま"
+          picture={
+            <span className="mt-2 block text-5xl" aria-hidden>
+              🏝️
+            </span>
+          }
+          className="mt-2 font-display text-3xl font-extrabold text-slate-800 sm:text-4xl"
         />
         <KidText
           as="p"
-          hiragana={`タップして あそぶ ${GAMES.length}こ`}
-          standard={`タップして遊べる ${GAMES.length} 種類のゲーム`}
+          hiragana="からだと あたまを つかう しま"
+          standard="からだとあたまをつかう、あそびのしま"
           picture={null}
-          className={`mt-2 text-stone-600 ${isPicture ? "sr-only" : isHiragana ? "text-lg" : "text-base"}`}
-          srOnlyInPicture
+          className={`mt-2 text-slate-600 ${
+            isPicture ? "sr-only" : isHiragana ? "text-lg" : "text-base"
+          }`}
         />
         {isPicture ? (
           <NarrateButton
-            text="みんなのミニゲーム。絵をタップしてあそんでね。"
+            text="ぴょんのあそびじま。島をタップしてあそんでね。"
             label="🔊"
             className="mx-auto mt-3"
           />
@@ -42,40 +46,21 @@ export default function Home() {
 
       <HomeSettings />
 
-      {GAME_SECTIONS.map((section) => {
-        const items = gamesByCategory(section.id);
-        if (items.length === 0) return null;
-
-        return (
-          <section key={section.id} className="float-in flex flex-col gap-3">
-            <div className="flex items-center gap-2 px-1">
-              <span className="text-2xl" aria-hidden>
-                {section.emoji}
-              </span>
-              <KidText
-                as="h2"
-                hiragana={section.hiraganaTitle}
-                standard={section.standardTitle}
-                className="font-display text-lg font-bold text-stone-700"
-              />
-            </div>
-            <ul className="flex flex-col gap-3">
-              {items.map((g) => (
-                <li key={g.href}>
-                  <GameCard game={g} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
+      <section className="flex flex-col gap-3">
+        <KidText
+          as="h2"
+          hiragana="しまを えらぶ"
+          standard="島を選ぶ"
+          className="px-1 font-display text-lg font-bold text-slate-700"
+        />
+        <IslandMap />
+      </section>
 
       <KidText
         as="p"
-        hiragana="おうちの ひとと いっしょに あそぼう"
-        standard="おうちのひとといっしょにあそびましょう"
-        picture={null}
-        className="text-center text-sm text-stone-500"
+        hiragana="ことばずかんとは ちがうよ。ここは あそびの しま！"
+        standard="ことば図鑑とは別。ここでは反応・記憶・数・色形・音であそびます。"
+        className="text-center text-sm text-slate-500"
         srOnlyInPicture={false}
       />
     </div>

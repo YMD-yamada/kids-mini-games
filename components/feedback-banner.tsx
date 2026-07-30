@@ -17,22 +17,21 @@ export function FeedbackBanner({
   kind,
   okText = "せいかい！",
   okHiragana = "せいかい！",
-  ngText = "ちがうよ、もういちど！",
-  ngHiragana = "ちがうよ、もういちど！",
-  playSound: shouldPlay = true,
+  ngText = "もういちど！",
+  ngHiragana = "もういちど！",
+  playSound = true,
 }: FeedbackBannerProps) {
   const { play } = useSettings();
-  const lastKind = useRef<"ok" | "ng" | null>(null);
+  const last = useRef<"ok" | "ng" | null>(null);
 
   useEffect(() => {
-    if (!kind || !shouldPlay || kind === lastKind.current) return;
-    lastKind.current = kind;
-    if (kind === "ok") play("match");
-    if (kind === "ng") play("wrong");
-  }, [kind, play, shouldPlay]);
+    if (!kind || !playSound || kind === last.current) return;
+    last.current = kind;
+    play(kind === "ok" ? "match" : "wrong");
+  }, [kind, play, playSound]);
 
   useEffect(() => {
-    if (!kind) lastKind.current = null;
+    if (!kind) last.current = null;
   }, [kind]);
 
   if (!kind) return null;
@@ -40,9 +39,7 @@ export function FeedbackBanner({
   return (
     <div
       className={`rounded-[1.75rem] p-4 text-center ring-2 ${
-        kind === "ok"
-          ? "bg-green-50 ring-green-200"
-          : "bg-amber-50 ring-amber-200"
+        kind === "ok" ? "bg-green-50 ring-green-200" : "bg-amber-50 ring-amber-200"
       }`}
       role="status"
       aria-live="polite"

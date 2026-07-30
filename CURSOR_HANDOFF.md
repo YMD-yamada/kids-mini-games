@@ -1,38 +1,30 @@
-# CURSOR_HANDOFF
+﻿# CURSOR_HANDOFF — kids-mini-games
 
-## プロジェクト
+更新: 2026-07-30
 
-`kids-mini-games` — 未就学〜低学年向けミニゲーム（Next.js）。個人情報・ログインなし。
+## 正本パス
 
-## 本番
+`C:\Users\cz7\Projects\kids-mini-games`
 
-- **Vercel:** https://kids-mini-games.vercel.app
-- **GitHub:** https://github.com/YMD-yamada/kids-mini-games
+## プロダクト
 
-## 表示モード（3段階）
+**ぴょんのあそびじま** — スキル島マップ型ミニゲーム（語彙図鑑ではない）。
 
-`readingMode` in `settings-provider.tsx`（localStorage: `kids-games-reading`）
+- 本番: https://kids-mini-games.vercel.app
+- GitHub: https://github.com/YMD-yamada/kids-mini-games
+- 差別化相手: `kotoba-zukan`（ことば・図鑑・本選び）
 
-| モード | 用途 |
-|--------|------|
-| `picture` | 文字ほぼなし・絵と音（未読） |
-| `hiragana` | ひらがな表示（学習ブリッジ・デフォルト） |
-| `standard` | 全文＋大人向けヒント（保護者操作） |
+## 島
 
-UI: `components/reading-mode-toggle.tsx`, `components/ui/kid-text.tsx`, `lib/use-reading-ui.ts`
+`lib/islands.ts` — reflex / memory / count / color / rhythm  
+進捗: `lib/progress.ts`（localStorage `pyon-island-stars`）  
+表示モード: `lib/reading-mode.ts`（え / ひらがな / ぜんぶ）
 
-## デザイン
+## コマンド
 
-- フォント: M PLUS Rounded 1c（見出し）+ Noto Sans JP（本文）— `globals.css`
-- パネル: `components/ui/kid-panel.tsx`
-- トークン: `app/globals.css`（`--shadow-card`, `--violet-soft` 等）
+`npm run build` / `npm run dev` / `npx vercel deploy --prod`
 
-## ゲーム（13種）
+## Progress
 
-`lib/games-config.ts` — カテゴリ `words`（ことば・もじ）/ `play`（あそび）
-
-ひらがな学習: listen, char-listen, **hira-word**, **hira-order**, hiragana（書き）
-
-## 最終更新
-
-2026-06-27 — 3段階表示モード、デザイン刷新、ひらがなゲーム2種追加。
+- Done: ゼロから作り直し（島マップ・5ゲーム・表示モード）
+- Next: portfolio 文言更新・personal-site 同期（必要なら）

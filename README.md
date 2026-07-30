@@ -1,43 +1,37 @@
-# みんなのミニゲーム
+# ぴょんのあそびじま
 
-未就学〜低学年向けミニゲーム（Next.js）。**文字が読めなくても遊べる** えモード・読み上げ付き。
+未就学〜低学年向けの **スキルあそび**（Next.js）。  
+ことば図鑑（語彙）とは別ベクトルで、反応・きおく・かず・いろかたち・おとであそびます。
 
-## 本番 URL（Vercel）
+## 本番 URL
 
-**https://kids-mini-games.vercel.app**（デプロイ後）
+**https://kids-mini-games.vercel.app**
 
-旧 GitHub Pages: https://ymd-yamada.github.io/kids-mini-games/（バックアップ）
+## ことばずかんとの違い
 
-## 子ども向けの工夫
+| ちいさなことばずかん | ぴょんのあそびじま |
+|--|--|
+| ことばを探す・きく・おぼえる | からだとあたまのスキルをあそぶ |
+| 語彙DB・本選び | なし（島マップ進行） |
 
-- **🖼️ えモード** — 文字を減らし、大きな絵文字だけで操作
-- **🔊 読み上げ** — 各ゲームの説明・問題を音声で再生
-- **👂 きいて えらぶ** — 声を聞いて絵を選ぶ（読みの練習）
-- **🔤 もじを きく** — ひらがなの声を聞いて文字を選ぶ
+## 5つの島
 
-## ゲーム（11種）
+1. はやわざじま — 反応
+2. おぼえじま — 短期記憶
+3. かずじま — 数感覚
+4. いろかたちじま — 色・形の弁別
+5. おとじま — 高低の音パターン（語意クイズではない）
 
-`lib/games-config.ts` を参照
+星をためると次の島がひらきます。表示は **え / ひらがな / ぜんぶ** の3段階。
 
-## ローカル開発
+## ローカル
 
 ```bash
 npm install
+npm run build
 npm run dev
 ```
 
-## Vercel デプロイ（推奨）
+## デプロイ
 
-1. [Vercel](https://vercel.com) で `YMD-yamada/kids-mini-games` をインポート
-2. GitHub Secrets に設定:
-   - `VERCEL_TOKEN`
-   - `VERCEL_ORG_ID`
-   - `VERCEL_PROJECT_ID`
-3. `master` へ push で `.github/workflows/deploy-vercel.yml` が本番デプロイ
-
-`GITHUB_PAGES` 環境変数は **設定しない**（ルート URL で動作）。
-
-## ymd-portfolio 連携
-
-`ymd-portfolio` の `config/apps.config.json` に本番 URL を登録済み。  
-子供用フィルタ（`audience: kid`）で表示されます。
+Vercel（`GITHUB_PAGES` は設定しない）。リポジトリ: `YMD-yamada/kids-mini-games`

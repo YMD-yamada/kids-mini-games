@@ -5,7 +5,6 @@ import type { ReadingMode } from "@/lib/reading-mode";
 
 export function useReadingUI() {
   const { readingMode } = useSettings();
-
   return {
     readingMode,
     isPicture: readingMode === "picture",
@@ -13,11 +12,7 @@ export function useReadingUI() {
     isStandard: readingMode === "standard",
     showText: readingMode !== "picture",
     showAdultHints: readingMode === "standard",
-    pickText: (opts: {
-      picture?: string;
-      hiragana: string;
-      standard: string;
-    }) => {
+    pickText: (opts: { picture?: string; hiragana: string; standard: string }) => {
       const map: Record<ReadingMode, string> = {
         picture: opts.picture ?? opts.hiragana,
         hiragana: opts.hiragana,

@@ -9,9 +9,18 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import type { IslandId } from "@/lib/islands";
 import type { GameLevel } from "@/lib/levels";
 import {
-  migrateLegacyPictureMode,
+  emptyStars,
+  isIslandUnlocked,
+  mergeStar,
+  parseStars,
+  PROGRESS_KEY,
+  starsForLevel,
+  type IslandStars,
+} from "@/lib/progress";
+import {
   parseReadingMode,
   type ReadingMode,
 } from "@/lib/reading-mode";
@@ -26,27 +35,26 @@ type SettingsContextValue = {
   setSpeechOn: (on: boolean) => void;
   readingMode: ReadingMode;
   setReadingMode: (mode: ReadingMode) => void;
-  /** @deprecated use readingMode === "picture" */
-  pictureMode: boolean;
-  /** @deprecated use setReadingMode */
-  setPictureMode: (on: boolean) => void;
+  stars: IslandStars;
+  recordClear: (island: IslandId, level: GameLevel) => void;
+  isUnlocked: (island: IslandId) => boolean;
   play: (id: SoundId) => void;
   ready: boolean;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
-const LEVEL_KEY = "kids-games-level";
-const SOUND_KEY = "kids-games-sound";
-const SPEECH_KEY = "kids-games-speech";
-const READING_KEY = "kids-games-reading";
-const PICTURE_KEY = "kids-games-picture";
+const LEVEL_KEY = "pyon-level";
+const SOUND_KEY = "pyon-sound";
+const SPEECH_KEY = "pyon-speech";
+const READING_KEY = "pyon-reading";
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [level, setLevelState] = useState<GameLevel>(1);
   const [soundOn, setSoundOnState] = useState(true);
   const [speechOn, setSpeechOnState] = useState(true);
   const [readingMode, setReadingModeState] = useState<ReadingMode>("hiragana");
+  const [stars, setStars] = useState<IslandStars>(emptyStars);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -55,19 +63,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const savedSound = localStorage.getItem(SOUND_KEY);
       const savedSpeech = localStorage.getItem(SPEECH_KEY);
       const savedReading = localStorage.getItem(READING_KEY);
-      const savedPicture = localStorage.getItem(PICTURE_KEY);
+      const savedStars = localStorage.getItem(PROGRESS_KEY);
 
       if (savedLevel === "1" || savedLevel === "2" || savedLevel === "3") {
         setLevelState(Number(savedLevel) as GameLevel);
       }
       if (savedSound === "0") setSoundOnState(false);
       if (savedSpeech === "0") setSpeechOnState(false);
-
-      const parsed =
-        parseReadingMode(savedReading) ??
-        migrateLegacyPictureMode(savedPicture) ??
-        "hiragana";
-      setReadingModeState(parsed);
+      setReadingModeState(parseReadingMode(savedReading) ?? "hiragana");
+      setStars(parseStars(savedStars));
     } catch {
       /* ignore */
     }
@@ -110,11 +114,22 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const setPictureMode = useCallback(
-    (on: boolean) => {
-      setReadingMode(on ? "picture" : "standard");
-    },
-    [setReadingMode],
+  const recordClear = useCallback((island: IslandId, clearLevel: GameLevel) => {
+    const earned = starsForLevel(clearLevel);
+    setStars((prev) => {
+      const next = { ...prev, [island]: mergeStar(prev[island], earned) };
+      try {
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  }, []);
+
+  const isUnlocked = useCallback(
+    (island: IslandId) => isIslandUnlocked(stars, island),
+    [stars],
   );
 
   const play = useCallback(
@@ -134,8 +149,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setSpeechOn,
       readingMode,
       setReadingMode,
-      pictureMode: readingMode === "picture",
-      setPictureMode,
+      stars,
+      recordClear,
+      isUnlocked,
       play,
       ready,
     }),
@@ -148,7 +164,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setSpeechOn,
       readingMode,
       setReadingMode,
-      setPictureMode,
+      stars,
+      recordClear,
+      isUnlocked,
       play,
       ready,
     ],
@@ -161,8 +179,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
 export function useSettings() {
   const ctx = useContext(SettingsContext);
-  if (!ctx) {
-    throw new Error("useSettings must be used within SettingsProvider");
-  }
+  if (!ctx) throw new Error("useSettings must be used within SettingsProvider");
   return ctx;
 }

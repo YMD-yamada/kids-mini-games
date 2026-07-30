@@ -28,8 +28,8 @@ export function NarrateButton({
         play("tap");
         import("@/lib/speech").then(({ speakJapanese }) => speakJapanese(text));
       }}
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-sky-100 px-4 py-2 font-display text-base font-bold text-sky-900 shadow-sm ring-2 ring-sky-200 transition hover:bg-sky-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 active:scale-[0.98] ${className}`}
-      aria-label={`${text} を 読み上げる`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-sky-100 px-4 py-2 font-display text-base font-bold text-sky-900 shadow-sm ring-2 ring-sky-200 transition hover:bg-sky-200 active:scale-[0.98] ${className}`}
+      aria-label={`${text} を読み上げる`}
     >
       <span className="text-2xl" aria-hidden>
         🔊

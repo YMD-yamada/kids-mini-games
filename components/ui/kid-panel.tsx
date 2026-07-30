@@ -7,10 +7,10 @@ type KidPanelProps = {
 };
 
 const variants = {
-  default: "bg-[var(--surface)] ring-[var(--ring)]",
-  soft: "bg-[var(--surface-soft)] ring-[var(--ring-soft)]",
-  sky: "bg-[var(--sky-soft)] ring-[var(--sky-ring)]",
-  violet: "bg-[var(--violet-soft)] ring-[var(--violet-ring)]",
+  default: "bg-white ring-sky-100",
+  soft: "bg-white/80 ring-sky-100",
+  sky: "bg-sky-50 ring-sky-200",
+  violet: "bg-violet-50 ring-violet-200",
 };
 
 export function KidPanel({
