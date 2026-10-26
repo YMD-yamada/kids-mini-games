@@ -60,6 +60,18 @@ export function LegalDock() {
             </a>
           ))}
         </nav>
+        <p className="mt-3 text-center text-[0.7rem] text-slate-500">
+          保護者の方へ：無料・広告なしで続けるための応援は{" "}
+          <a
+            href="https://ko-fi.com/ymdapps"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            Ko-fi
+          </a>{" "}
+          から受け付けています。
+        </p>
       </KidPanel>
     </div>
   );
