@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#7dd3fc"/>
+  <circle cx="390" cy="122" r="54" fill="#fde047"/>
+  <path d="M0 360 Q128 330 256 360 T512 360 V512 H0Z" fill="#38bdf8"/>
+  <ellipse cx="256" cy="372" rx="170" ry="54" fill="#fcd34d"/>
+  <ellipse cx="256" cy="352" rx="130" ry="36" fill="#86efac"/>
+  <!-- うさぎ（ぴょん） -->
+  <ellipse cx="222" cy="168" rx="22" ry="62" fill="#fff" stroke="#1e293b" stroke-width="8"/>
+  <ellipse cx="290" cy="168" rx="22" ry="62" fill="#fff" stroke="#1e293b" stroke-width="8"/>
+  <ellipse cx="222" cy="172" rx="9" ry="40" fill="#fda4af"/>
+  <ellipse cx="290" cy="172" rx="9" ry="40" fill="#fda4af"/>
+  <circle cx="256" cy="268" r="78" fill="#fff" stroke="#1e293b" stroke-width="8"/>
+  <circle cx="230" cy="258" r="10" fill="#1e293b"/>
+  <circle cx="282" cy="258" r="10" fill="#1e293b"/>
+  <circle cx="212" cy="284" r="11" fill="#fda4af" opacity=".7"/>
+  <circle cx="300" cy="284" r="11" fill="#fda4af" opacity=".7"/>
+  <path d="M244 286 Q256 298 268 286" fill="none" stroke="#1e293b" stroke-width="7" stroke-linecap="round"/>
+</svg>
