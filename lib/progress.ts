@@ -30,11 +30,14 @@ export function parseStars(raw: string | null): IslandStars {
   return base;
 }
 
-/** Island unlocks when previous island has at least 1 star (first always open). */
+/** 最初から遊べる島の数。全部に鍵があると、はじめての子がすぐ飽きてしまう */
+export const OPEN_FROM_START = 3;
+
+/** Island unlocks when previous island has at least 1 star (first OPEN_FROM_START always open). */
 export function isIslandUnlocked(stars: IslandStars, id: IslandId): boolean {
   const island = ISLANDS.find((i) => i.id === id);
   if (!island) return false;
-  if (island.order === 0) return true;
+  if (island.order < OPEN_FROM_START) return true;
   const prev = ISLANDS.find((i) => i.order === island.order - 1);
   if (!prev) return true;
   return stars[prev.id] >= 1;
