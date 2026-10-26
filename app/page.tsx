@@ -44,8 +44,6 @@ export default function Home() {
         ) : null}
       </header>
 
-      <HomeSettings />
-
       <section className="flex flex-col gap-3">
         <KidText
           as="h2"
@@ -55,6 +53,8 @@ export default function Home() {
         />
         <IslandMap />
       </section>
+
+      <HomeSettings />
 
       <KidText
         as="p"
