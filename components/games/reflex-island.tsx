@@ -87,7 +87,7 @@ export function ReflexIsland() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <KidPanel variant="sky">
         <KidText
           as="p"
@@ -99,7 +99,7 @@ export function ReflexIsland() {
         />
         <NarrateButton
           text="まつあいだはタッチしないで。ぴょんが出たらはやくタッチしてね。"
-          className="mt-3 w-full"
+          className="mx-auto mt-2 !flex w-fit !min-h-10 !py-1"
         />
       </KidPanel>
 

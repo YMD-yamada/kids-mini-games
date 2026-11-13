@@ -74,7 +74,7 @@ export function CountIsland() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <KidPanel variant="sky">
         <KidText
           as="p"
@@ -84,12 +84,12 @@ export function CountIsland() {
           className="text-center font-display font-bold text-sky-900"
           srOnlyInPicture={false}
         />
-        <NarrateButton text="絵をかぞえて、数字をタップしてね。" className="mt-3 w-full" />
+        <NarrateButton text="絵をかぞえて、数字をタップしてね。" className="mx-auto mt-2 !flex w-fit !min-h-10 !py-1" />
       </KidPanel>
 
       <ProgressStars current={correct} total={cfg.rounds} />
 
-      <KidPanel className="flex min-h-36 flex-wrap items-center justify-center gap-2 p-6 text-4xl">
+      <KidPanel className="flex min-h-28 flex-wrap items-center justify-center gap-2 p-4 text-4xl">
         {Array.from({ length: count }, (_, i) => (
           <span key={i} aria-hidden>
             {emoji}

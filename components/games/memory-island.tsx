@@ -87,7 +87,7 @@ export function MemoryIsland() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <KidPanel variant="violet">
         <KidText
           as="p"
@@ -99,7 +99,7 @@ export function MemoryIsland() {
         />
         <NarrateButton
           text="絵が順番に出るよ。同じ順番でタップしてね。"
-          className="mt-3 w-full"
+          className="mx-auto mt-2 !flex w-fit !min-h-10 !py-1"
         />
       </KidPanel>
 

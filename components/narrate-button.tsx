@@ -14,8 +14,8 @@ type NarrateButtonProps = {
 export function NarrateButton({
   text,
   label,
-  hiraganaLabel = "🔊 きく",
-  standardLabel = "🔊 読み上げ",
+  hiraganaLabel = "きく",
+  standardLabel = "読み上げ",
   className = "",
 }: NarrateButtonProps) {
   const { speechOn, setSpeechOn, play } = useSettings();
@@ -34,7 +34,7 @@ export function NarrateButton({
       <span className="text-2xl" aria-hidden>
         🔊
       </span>
-      {label ? (
+      {label === "🔊" ? null : label ? (
         <span>{label}</span>
       ) : (
         <KidText hiragana={hiraganaLabel} standard={standardLabel} />
