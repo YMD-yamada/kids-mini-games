@@ -119,7 +119,7 @@ export function ColorIsland() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <KidPanel className="bg-rose-50 ring-rose-200">
         <KidText
           as="p"
@@ -131,7 +131,7 @@ export function ColorIsland() {
         />
         <NarrateButton
           text="おおきい見本とおなじものをタップしてね。"
-          className="mt-3 w-full"
+          className="mx-auto mt-2 !flex w-fit !min-h-10 !py-1"
         />
       </KidPanel>
 

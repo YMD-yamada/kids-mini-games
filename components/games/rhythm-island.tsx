@@ -103,7 +103,7 @@ export function RhythmIsland() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-3">
       <KidPanel className="bg-lime-50 ring-lime-200">
         <KidText
           as="p"
@@ -115,7 +115,7 @@ export function RhythmIsland() {
         />
         <NarrateButton
           text="高低の音が順番に鳴るよ。同じ順番でボタンを押してね。ことばではなく音のあそびだよ。"
-          className="mt-3 w-full"
+          className="mx-auto mt-2 !flex w-fit !min-h-10 !py-1"
         />
       </KidPanel>
 

@@ -56,13 +56,6 @@ export default function Home() {
 
       <HomeSettings />
 
-      <KidText
-        as="p"
-        hiragana="ことばずかんとは ちがうよ。ここは あそびの しま！"
-        standard="ことば図鑑とは別。ここでは反応・記憶・数・色形・音であそびます。"
-        className="text-center text-sm text-slate-500"
-        srOnlyInPicture={false}
-      />
     </div>
   );
 }

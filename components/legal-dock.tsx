@@ -27,7 +27,11 @@ const LINKS = [
 export function LegalDock() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pb-6 sm:px-6">
-      <KidPanel variant="sky" className="float-in">
+      <details className="group text-center">
+        <summary className="mx-auto inline-flex min-h-11 cursor-pointer list-none items-center gap-1 rounded-full px-4 text-xs font-bold text-slate-500">
+          🔒 おとなの方へ（ほご・やくそく・といあわせ・応援）
+        </summary>
+      <KidPanel variant="sky" className="mt-2 text-left">
         <KidText
           as="p"
           hiragana="なまえも ばしょも あつめないよ"
@@ -73,6 +77,7 @@ export function LegalDock() {
           から受け付けています。
         </p>
       </KidPanel>
+      </details>
     </div>
   );
 }
