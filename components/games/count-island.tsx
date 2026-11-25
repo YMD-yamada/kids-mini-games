@@ -105,7 +105,7 @@ export function CountIsland() {
             type="button"
             disabled={feedback !== "idle"}
             onClick={() => onPick(n)}
-            className="flex min-h-20 items-center justify-center rounded-2xl bg-white font-display text-3xl font-extrabold text-sky-900 shadow-sm ring-2 ring-sky-100 transition hover:bg-sky-50 active:scale-[0.98] disabled:opacity-70"
+            className="tile-3d tile-3d--sky flex min-h-20 items-center justify-center rounded-2xl bg-white font-display text-3xl font-extrabold text-sky-900 shadow-sm ring-2 ring-sky-100 transition hover:bg-sky-50 active:scale-[0.98] disabled:opacity-70"
           >
             {n}
           </button>

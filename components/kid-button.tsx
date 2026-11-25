@@ -11,7 +11,7 @@ export const KidButton = forwardRef<HTMLButtonElement, KidButtonProps>(
   function KidButton({ className = "", variant = "primary", ...props }, ref) {
     const variantClass =
       variant === "primary"
-        ? "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] ring-2 ring-[var(--accent-ring)]"
+        ? "tile-3d tile-3d--accent bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] ring-2 ring-[var(--accent-ring)]"
         : variant === "secondary"
           ? "bg-white text-slate-800 ring-2 ring-slate-200 hover:bg-slate-50"
           : "bg-amber-100 text-slate-900 ring-2 ring-amber-200 hover:bg-amber-200";
