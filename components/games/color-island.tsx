@@ -157,7 +157,7 @@ export function ColorIsland() {
             type="button"
             disabled={feedback !== "idle"}
             onClick={() => onPick(item)}
-            className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl bg-white shadow-sm ring-2 ring-rose-100 transition hover:bg-rose-50 active:scale-[0.98] disabled:opacity-70"
+            className="tile-3d tile-3d--rose flex min-h-24 flex-col items-center justify-center gap-2 rounded-2xl bg-white shadow-sm ring-2 ring-rose-100 transition hover:bg-rose-50 active:scale-[0.98] disabled:opacity-70"
             aria-label={item.label}
           >
             <ShapeSwatch item={item} />

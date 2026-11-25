@@ -116,7 +116,7 @@ export function MemoryIsland() {
             type="button"
             disabled={phase !== "input"}
             onClick={() => onPick(sym)}
-            className="flex aspect-square items-center justify-center rounded-2xl bg-white text-4xl shadow-sm ring-2 ring-violet-100 transition hover:bg-violet-50 active:scale-[0.96] disabled:opacity-50"
+            className="tile-3d tile-3d--violet flex aspect-square items-center justify-center rounded-2xl bg-white text-4xl shadow-sm ring-2 ring-violet-100 transition hover:bg-violet-50 active:scale-[0.96] disabled:opacity-50"
           >
             {sym}
           </button>
